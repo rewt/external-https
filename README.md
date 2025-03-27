@@ -2,7 +2,7 @@
 
 This repository contains a proof of concept (PoC) demonstrating how to configure an Istio service mesh to handle outbound HTTP traffic from a workload, route it through an egress gateway, and secure it with mutual TLS (mTLS) using SPIFFE identities. The setup includes namespaces, deployments, Istio configurations, and optional sidecar restrictions to enforce traffic routing through the service mesh.
 
-![Egress Gateway Diagram](gdx-external-https-diagram.png)
+![Egress Gateway Diagram](external-https-flow-diagram.png)
 
 ## Overview
 
