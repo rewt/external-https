@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: jsonplaceholder-egress-gateway
+  namespace: curl-egress-tst
+spec:
+  hosts:
+  - jsonplaceholder.typicode.com
+  gateways:
+  - egress-gateway
+  http:
+  - route:
+    - destination:
+        host: jsonplaceholder.typicode.com
+        port:
+          number: 443

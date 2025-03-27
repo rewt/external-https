@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: jsonplaceholder
+  namespace: curl-external-tst
+spec:
+  hosts:
+  - jsonplaceholder.typicode.com
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  - number: 443
+    name: https
+    protocol: HTTP # HTTP internally; TLS is originated by the egress gateway
+  location: MESH_EXTERNAL
+  resolution: DNS

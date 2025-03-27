@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: curl-egress-tst
+  namespace: curl-egress-tst
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: curl-egress-tst-gateway
+  namespace: curl-egress-tst
+  labels:
+    istio: egressgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      istio: egressgateway
+  template:
+    metadata:
+      labels:
+        istio: egressgateway
+      annotations:
+        sidecar.istio.io/inject: "true"
+        inject.istio.io/templates: "gateway"
+        prometheus.io/path: "/stats/prometheus"
+        prometheus.io/port: "15020"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: curl-egress-tst
+      containers:
+      - name: istio-proxy
+        image: gcr.io/gke-release/asm/proxyv2:1.19.10-asm.26
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 15090
+          name: http-envoy-prom
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 1337
+          runAsNonRoot: true
+          runAsUser: 1337
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: 15021
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 2
+          successThreshold: 1
+          failureThreshold: 30
+          timeoutSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: curl-egress-tst
+  namespace: curl-egress-tst
+  labels:
+    istio: egressgateway
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    istio: egressgateway

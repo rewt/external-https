@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: curl-test
+  namespace: curl-external-tst
+  labels:
+    app: curl-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: curl-test
+  template:
+    metadata:
+      labels:
+        app: curl-test
+      annotations:
+        # Ensure Istio sidecar injection
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - name: curl-container
+        image: curlimages/curl:latest
+        command: ["/bin/sh"]
+        args:
+        - -c
+        - |
+          while true; do
+            curl -s http://jsonplaceholder.typicode.com/todos/1 -v
+            sleep 5
+          done
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"

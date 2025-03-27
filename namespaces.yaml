@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: curl-external-tst
+  labels:
+    kubernetes.io/metadata.name: curl-external-tst
+    istio.io/rev: asm-managed-stable
+  annotations:
+    argocd.argoproj.io/instance: root-application
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: curl-egress-tst
+  labels:
+    kubernetes.io/metadata.name: curl-egress-tst
+    istio.io/rev: asm-managed-stable
+  annotations:
+    argocd.argoproj.io/instance: root-application

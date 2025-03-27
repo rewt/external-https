@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-curl-external-to-egress
+  namespace: curl-egress-tst
+spec:
+  selector:
+    matchLabels:
+      istio: egressgateway
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces:
+        - curl-external-tst

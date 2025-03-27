@@ -1,0 +1,11 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: restrict-outbound-traffic
+  namespace: curl-external-tst
+spec:
+  outboundTrafficPolicy:
+    mode: REGISTRY_ONLY
+  workloadSelector:
+    labels:
+      app: curl-test
